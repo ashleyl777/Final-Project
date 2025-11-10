@@ -15,8 +15,11 @@
 
 using namespace std;
 
+// Constants (add here if not in Utility.h)
+const int TICKS_PER_ELEVATOR_MOVE = 5;
+
 void Elevator::tick(int currentTime) {
-	if (servicing) {
+    if (servicing) {
         if (currentTime % TICKS_PER_ELEVATOR_MOVE == 0) {
             if (currentFloor < targetFloor) {
                 currentFloor++;
@@ -34,10 +37,11 @@ void Elevator::tick(int currentTime) {
     
 }
 
-
 void Elevator::serviceRequest(int floorNum) {
     targetFloor = floorNum;
-	servicing = true;
+    servicing = true;
+}
+
 }
 
 //////////////////////////////////////////////////////
@@ -74,6 +78,7 @@ int Elevator::getCurrentFloor() const {
 int Elevator::getTargetFloor() const {
     return targetFloor;
 }
+
 
 
 
