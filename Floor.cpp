@@ -4,8 +4,8 @@
  * Floor.cpp
  * Project UID 848fee0125dbb5eb53ed294f20dbef81
  *
- * <#Names#>
- * <#Uniqnames#>
+ * Ashley Liao, Yeeun Kim, Liming Ng, Jaeseong Koo
+ * ashleyyl, kimyeeun, limingf, jaeseo
  *
  * Final Project - Elevators
  */
@@ -125,3 +125,4 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
