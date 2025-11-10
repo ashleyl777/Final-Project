@@ -16,8 +16,24 @@
 using namespace std;
 
 void Elevator::tick(int currentTime) {
-    //TODO: Implement tick
+    if (servicing) {
+        if (currentTime % TICKS_PER_ELEVATOR_MOVE == 0) {
+            if (currentFloor < targetFloor) {
+                currentFloor++;
+            }
+            
+            else if (currentFloor > targetFloor) {
+                currentFloor--;
+            }
+            
+            if (currentFloor == targetFloor) {
+                servicing = false;
+            }
+        }
+    }
+    
 }
+
 
 void Elevator::serviceRequest(int floorNum) {
     //TODO: Implement serviceRequest
@@ -57,3 +73,4 @@ int Elevator::getCurrentFloor() const {
 int Elevator::getTargetFloor() const {
     return targetFloor;
 }
+
