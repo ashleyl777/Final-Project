@@ -29,7 +29,7 @@ int Floor::tick(int currentTime) {
 			explodedCount++;
 		}
 	}
-	if (numPoepleToRemove > 0) {
+	if (0 < numPoepleToRemove) {
 		removePeople(indxToRemove, numPeopleToRemove);
 	}
 	return explodedCount;
@@ -52,7 +52,23 @@ void Floor::addPerson(Person newPerson, int request) {
 
 void Floor::removePeople(const int indicesToRemove[MAX_PEOPLE_PER_FLOOR],
                          int numPeopleToRemove) {
-    //TODO: Implement removePeople
+    if (0 >= numPeopleToRemove) {
+		return;
+	}
+	int writeIndex = 0;
+	int currentRemoveIndex = 0;
+
+
+	for (int readIndex = 0; readIndex < numPeople; ++readIndex) {
+		bool isBeingRemoved = false;
+	}
+
+	if (!isBeingRemoved) {
+		if (readIndex != writeIndex) {
+			people[writeIndex] = people[readIndex];
+		}
+		writeIndex++;
+	}
 }
 
 void Floor::resetRequests() {
@@ -149,6 +165,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
