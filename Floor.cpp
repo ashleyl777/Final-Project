@@ -17,20 +17,20 @@ using namespace std;
 
 int Floor::tick(int currentTime) {
     int exploadedCount = 0;
-	int indicesToRemove[MAX_PEOPLE_PER_FLOOR];
+	int indxToRemove[MAX_PEOPLE_PER_FLOOR];
 	int numPeopleToRemove = 0;
 
 	for (int i = 0; i < numPeople; ++i) {
 		people[i].tick(currentTime);
 		
 		if (people[i].hasExploded()) {
-			indicesToRemove[numPeopleToRemove] = i;
+			indxToRemove[numPeopleToRemove] = i;
 			numPeopleToRemove++;
 			explodedCount++;
 		}
 	}
 	if (numPoepleToRemove > 0) {
-		removePeople(indicesToRemove, numPeopleToRemove);
+		removePeople(indxToRemove, numPeopleToRemove);
 	}
 	return explodedCount;
 }
@@ -138,5 +138,6 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
