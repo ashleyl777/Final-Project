@@ -16,7 +16,7 @@
 using namespace std;
 
 void Elevator::tick(int currentTime) {
-    if (servicing) {
+	if (servicing) {
         if (currentTime % TICKS_PER_ELEVATOR_MOVE == 0) {
             if (currentFloor < targetFloor) {
                 currentFloor++;
@@ -73,4 +73,5 @@ int Elevator::getCurrentFloor() const {
 int Elevator::getTargetFloor() const {
     return targetFloor;
 }
+
 
