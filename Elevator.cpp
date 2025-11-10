@@ -4,8 +4,8 @@
  * Elevator.cpp
  * Project UID 848fee0125dbb5eb53ed294f20dbef81
  *
- * <#Names#>
- * <#Uniqnames#>
+ * Ashley Liao, Yeeun Kim, Liming Ng, Jaeseong Koo
+ * ashleyyl, kimyeeun, limingf, jaeseo
  *
  * Final Project - Elevators
  */
@@ -78,6 +78,7 @@ int Elevator::getCurrentFloor() const {
 int Elevator::getTargetFloor() const {
     return targetFloor;
 }
+
 
 
 
