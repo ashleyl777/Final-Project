@@ -36,7 +36,8 @@ void Elevator::tick(int currentTime) {
 
 
 void Elevator::serviceRequest(int floorNum) {
-    //TODO: Implement serviceRequest
+    targetFloor = floorNum;
+	servicing = true;
 }
 
 //////////////////////////////////////////////////////
@@ -73,5 +74,6 @@ int Elevator::getCurrentFloor() const {
 int Elevator::getTargetFloor() const {
     return targetFloor;
 }
+
 
 
