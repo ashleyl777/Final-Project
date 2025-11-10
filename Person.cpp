@@ -4,7 +4,7 @@
  * Person.cpp
  * Project UID 848fee0125dbb5eb53ed294f20dbef81
  *
- * <#Names#>
+ * Ashley Liao, Yeeun Kim, 
  * <#Uniqnames#>
  *
  * Final Project - Elevators
@@ -64,3 +64,4 @@ ostream& operator<< (ostream& outs, Person p)
     p.print(outs);
     return outs;
 }
+
