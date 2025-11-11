@@ -15,18 +15,38 @@
 using namespace std;
 
 void Building::spawnPerson(Person newPerson){
-    //TODO: Implement spawnPerson
+    int floorNum = newPerson.getCurrentFloor();
+    floors[floorNum].addPerson(newPerson);
 }
 
 void Building::update(Move move){
-    //TODO: Implement update
+   if (move.isPassMove()) {
+        return;
+    }
+    int elevatorId = move.getElevatorId();
+    if (move.isPickupMove()) {
+        int currentFloor = elevators[elevatorId].getCurrentFloor();
+        int numPeopleToPickup = move.getNumPeopleToPickup();
+        int peopleToPickup[MAX_PEOPLE_PER_FLOOR];        
+        for (int i = 0; i < numPeopleToPickup; i++) {
+            peopleToPickup[i] = move.getPickupList()[i];
+        }
+        floors[currentFloor].removePeople(peopleToPickup, numPeopleToPickup);
+    }    
+    elevators[elevatorId].serviceRequest(move.getTargetFloor());
 }
 
 int Building::tick(Move move){
-    //TODO: Implement tick
-
-    //returning 0 to prevent compilation error
-    return 0;
+    time++;
+    update(move);
+    for (int i = 0; i < NUM_ELEVATORS; i++) {
+        elevators[i].tick(time);
+    }
+    int totalExploded = 0;
+    for (int i = 0; i < NUM_FLOORS; i++) {
+        totalExploded += floors[i].tick(time);
+    }    
+    return totalExploded;
 }
 
 //////////////////////////////////////////////////////
@@ -151,4 +171,5 @@ BuildingState Building::getBuildingState() const {
 
     return buildingState;
 }
+
 
