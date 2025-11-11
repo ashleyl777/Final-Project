@@ -76,13 +76,11 @@ void Floor::resetRequests() {
     hasDownRequest = false;
 
     for (int i = 0; i < numPeople; ++i) {
-        int target = people[i].getTargetFloor();
-        int current = people[i].getCurrentFloor();
 
-        if (target < current) {
+        if (people[i].getTargetFloor() < people[i].getCurrentFloor()) {
             hasDownRequest = true;
         }
-        else if (target > current) {
+        else if (people[i].getTargetFloor > people[i].getCurrentFloor()) {
             hasUpRequest = true;
         }
         if (hasUpRequest && hasDownRequest) {
@@ -181,6 +179,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
