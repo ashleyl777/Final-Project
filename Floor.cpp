@@ -23,7 +23,7 @@ int Floor::tick(int currentTime) {
     for (int i = 0; i < numPeople; ++i) {
         people[i].tick(currentTime);
         
-        if (people[i].hasExploaded()) {
+        if (people[i].getAngerLevel() >= MAX_ANGER) {
             indicesToRemove[numPeopleToRemove] = i;
             numPeopleToRemove++;
             exploadedCount++;
@@ -190,6 +190,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
