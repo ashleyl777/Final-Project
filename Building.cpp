@@ -29,34 +29,38 @@ void Building::spawnPerson(Person newPerson){
 }
 
 void Building::update(Move move){
-   if (move.isPassMove()) {
+ if (move.isPassMove()) {
         return;
     }
-    int elevatorId = move.getElevatorId();
+    
+    int eId = move.getElevatorId();
+    
     if (move.isPickupMove()) {
-        int currentFloor = elevators[elevatorId].getCurrentFloor();
-        int numPeopleToPickup = move.getNumPeopleToPickup();
-        int peopleToPickup[MAX_PEOPLE_PER_FLOOR];        
-        for (int i = 0; i < numPeopleToPickup; i++) {
-            peopleToPickup[i] = move.getPickupList()[i];
-        }
-        floors[currentFloor].removePeople(peopleToPickup, numPeopleToPickup);
-    }    
-    elevators[elevatorId].serviceRequest(move.getTargetFloor());
+        int peopleIndices[MAX_PEOPLE_PER_FLOOR];
+        int numPeople = move.getNumPeopleToPickup();
+        
+        move.copyListOfPeopleToPickup(peopleIndices);
+        int currentFloor = elevators[eId].getCurrentFloor();
+        floors[currentFloor].removePeople(peopleIndices, numPeople);
+    }
+    elevators[eId].serviceRequest(move.getTargetFloor());
 }
 
 int Building::tick(Move move){
     time++;
-    update(move);
+    
     for (int i = 0; i < NUM_ELEVATORS; i++) {
         elevators[i].tick(time);
     }
+    
     int totalExploded = 0;
     for (int i = 0; i < NUM_FLOORS; i++) {
         totalExploded += floors[i].tick(time);
-    }    
+    }
+
     return totalExploded;
 }
+
 
 //////////////////////////////////////////////////////
 ////// DO NOT MODIFY ANY CODE BENEATH THIS LINE //////
@@ -180,6 +184,7 @@ BuildingState Building::getBuildingState() const {
 
     return buildingState;
 }
+
 
 
 
