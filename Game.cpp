@@ -17,34 +17,19 @@
 #include "Utility.h"
 using namespace std;
 
-// Stub for playGame for Core, which plays random games
-// You *must* revise this function according to the RME and spec
-// Code that will not appear in your solution is noted in the comments
 void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
-    /* used to generate random numbers for spawning a randon Person
-     * these three statements will not be needed when you have
-     * finished this function */
     std::mt19937 gen(1);
     std::uniform_int_distribution<> floorDist(0, 9);
     std::uniform_int_distribution<> angerDist(0, 3);
 
-    // initialize the game
     isAIMode = isAIModeIn;
     printGameStartPrompt();
     initGame(gameFile);
 
-    /* play until checkForGameEnd() stops the program
-     * you *will* modify this loop
-     */
     while (true) {
-        // random floor and targetFloor
-        // these two statements are not needed in the finished solution
         int src = floorDist(gen);
         int dst = floorDist(gen);
         
-        /* check that the randomly generate floor and targetFloor differ
-         * none of this if statement will appear in your finished solution
-         * Persons will be read from the file instead */
         if (src != dst) {
             std::stringstream ss;
             ss << "0f" << src << "t" << dst << "a" << angerDist(gen);
@@ -52,19 +37,15 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
             building.spawnPerson(p);
         }
 
-        // print the state of the Building and check for end of game
         building.prettyPrintBuilding(cout);
         satisfactionIndex.printSatisfaction(cout, false);
         checkForGameEnd();
 
-        // get and apply the next move
         Move nextMove = getMove();
         update(nextMove);
     }
 }
 
-// Stub for isValidPickupList for Core
-// You *must* revise this function according to the RME and spec
 bool Game::isValidPickupList(const string& pickupList, 
                              const int pickupFloorNum) const {
     return true;
