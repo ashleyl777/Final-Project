@@ -19,19 +19,81 @@
 using namespace std;
 
 Move::Move(string commandString) : Move() {
-    //TODO: Implement non-default constructor
+	if (commandString.empty()) {
+        isPass = true;
+        return;
+    }
+    string upperCommandString = commandString;
+    for (char &c : upperCommandString) {
+        c = toupper(c);
+    }    
+    if (upperCommandString == "S") {
+        isSave = true;
+        return;
+    }
+    if (upperCommandString == "Q") {
+        isQuit = true;
+        return;
+    }
+	
+	if (upperCommandString.length() >= 3 && upperCommandString[0] == 'E') {
+        elevatorId = commandString[1] - '0';
+        char moveType = upperCommandString[2];        
+        if (moveType == 'F' && upperCommandString.length() >= 4) {
+            targetFloor = commandString[3] - '0';     
+        } 
+		else if (moveType == 'P') {
+            isPickup = true;
+        }
+    }
 }
 
 bool Move::isValidMove(Elevator elevators[NUM_ELEVATORS]) const {
-    //TODO: Implement isValidMove
-    
-    //Returning false to prevent compilation error
+	if (isPass || isSave || isQuit) {
+        return true;
+    }
+	if (isPickup || (targetFloor != -1 && elevatorId != -1)) { 
+        if (elevatorId < 0 || elevatorId >= NUM_ELEVATORS) {
+            return false;
+        }     
+        if (elevators[elevatorId].isServicing()) {
+            return false;
+        }
+        if (!isPickup) {
+            if (targetFloor < 0 || targetFloor >= NUM_FLOORS) {
+                return false;
+            }            
+            if (targetFloor == elevators[elevatorId].getCurrentFloor()) {
+                return false;
+            }
+        }        
+        return true;
+    }    
     return false;
 }
 
+
 void Move::setPeopleToPickup(const string& pickupList, const int currentFloor, 
                              const Floor& pickupFloor) {
-    //TODO: Implement setPeopleToPickup
+	numPeopleToPickup = 0;
+    totalSatisfaction = 0;
+	targetFloor = -1;
+    int maxDistance = -1;
+	for (char indexChar : pickupList) {
+        int personIndex = indexChar - '0';        
+        if (personIndex >= 0 && personIndex < pickupFloor.getNumPeople()) {
+			Person p = pickupFloor.getPersonByIndex(personIndex);
+			peopleToPickup[numPeopleToPickup] = personIndex;
+			numPeopleToPickup++;
+			totalSatisfaction += p.getAngerLevel();
+			int personTargetFloor = p.getTargetFloor();
+            int distance = abs(personTargetFloor - currentFloor);
+            if (distance > maxDistance) {
+                maxDistance = distance;
+                targetFloor = personTargetFloor;
+            }
+        }
+    }
 }
 
 //////////////////////////////////////////////////////
@@ -90,3 +152,4 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
