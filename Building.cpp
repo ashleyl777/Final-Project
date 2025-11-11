@@ -15,8 +15,17 @@
 using namespace std;
 
 void Building::spawnPerson(Person newPerson){
-    int floorNum = newPerson.getCurrentFloor();
-    floors[floorNum].addPerson(newPerson);
+    int currentFloor = newPerson.getCurrentFloor();
+    int targetFloor = newPerson.getTargetFloor();
+    
+    int direction = 0;
+    if (targetFloor > currentFloor) {
+        direction = 1;
+    }
+    else if (targetFloor < currentFloor) {
+        direction = -1;
+    }
+    floors[currentFloor].addPerson(newPerson, direction);
 }
 
 void Building::update(Move move){
@@ -171,5 +180,6 @@ BuildingState Building::getBuildingState() const {
 
     return buildingState;
 }
+
 
 
