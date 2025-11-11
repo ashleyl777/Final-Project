@@ -16,23 +16,19 @@
 using namespace std;
 
 int Floor::tick(int currentTime) {
-    int exploadedCount = 0;
-    int indicesToRemove[MAX_PEOPLE_PER_FLOOR];
-    int numPeopleToRemove = 0;
+    int count = 0;
+    int toRemove[MAX_PEOPLE_PER_FLOOR];
 
     for (int i = 0; i < numPeople; ++i) {
-        people[i].tick(currentTime);
-        
-        if (people[i].getAngerLevel() >= MAX_ANGER) {
-            indicesToRemove[numPeopleToRemove] = i;
-            numPeopleToRemove++;
-            exploadedCount++;
+        bool exploded = people[i].tick(currentTime);        
+        if (exploded) {
+            toRemove[count++] = i;
         }
     }
-    if (0 < numPeopleToRemove) {
-        removePeople(indicesToRemove, numPeopleToRemove);
+    if (count < 0) {
+        removePeople(toRemove, count);
     }
-    return exploadedCount;
+    return count;
 }
 
 void Floor::addPerson(Person newPerson, int request) {
@@ -190,6 +186,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
