@@ -74,15 +74,19 @@ void Move::setPeopleToPickup(const string& pickupList, const int currentFloor,
     totalSatisfaction = 0;
 	targetFloor = -1;
     int maxDistance = -1;
+	
 	for (char indexChar : pickupList) {
-        int personIndex = indexChar - '0';        
+        int personIndex = indexChar - '0';   
+		
         if (personIndex >= 0 && personIndex < pickupFloor.getNumPeople()) {
 			Person p = pickupFloor.getPersonByIndex(personIndex);
 			peopleToPickup[numPeopleToPickup] = personIndex;
 			numPeopleToPickup++;
-			totalSatisfaction += p.getAngerLevel();
+			
+			totalSatisfaction = (MAX_ANGER - p.getAngerLevel();
 			int personTargetFloor = p.getTargetFloor();
             int distance = abs(personTargetFloor - currentFloor);
+			
             if (distance > maxDistance) {
                 maxDistance = distance;
                 targetFloor = personTargetFloor;
@@ -147,6 +151,7 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
 
 
 
