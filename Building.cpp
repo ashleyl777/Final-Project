@@ -40,8 +40,9 @@ void Building::update(Move move){
         int numPeople = move.getNumPeopleToPickup();
         
         move.copyListOfPeopleToPickup(peopleIndices);
-        int currentFloor = elevators[eId].getCurrentFloor();
-        floors[currentFloor].removePeople(peopleIndices, numPeople);
+        int floorNum = move.getTargetFloor();
+        floors[floorNum].removePeople(peopleIndices, numPeople);
+        
     }
     elevators[eId].serviceRequest(move.getTargetFloor());
 }
@@ -49,6 +50,7 @@ void Building::update(Move move){
 int Building::tick(Move move){
     time++;
     
+    update(move);
     for (int i = 0; i < NUM_ELEVATORS; i++) {
         elevators[i].tick(time);
     }
@@ -184,7 +186,3 @@ BuildingState Building::getBuildingState() const {
 
     return buildingState;
 }
-
-
-
-
