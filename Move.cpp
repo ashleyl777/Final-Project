@@ -78,6 +78,7 @@ void Move::setPeopleToPickup(const string& pickupList, const int currentFloor,
 
     for (int i = 0; i < pickupList.size(); i++) {
         int indice = pickupList.at(i) - '0';
+		peopleToPickup[numPeopleToPickup] = indice;
         numPeopleToPickup++;
 
         Person p = pickupFloor.getPersonByIndex(indice);
@@ -150,6 +151,7 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
 
 
 
