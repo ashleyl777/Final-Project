@@ -40,8 +40,8 @@ void Building::update(Move move){
         int numPeople = move.getNumPeopleToPickup();
         
         move.copyListOfPeopleToPickup(peopleIndices);
-        int floorNum = move.getTargetFloor();
-        floors[floorNum].removePeople(peopleIndices, numPeople);
+        int currentFloor = elevators[eId].getCurrentFloor();
+        floors[currentFloor].removePeople(peopleIndices, numPeople);
         
     }
     elevators[eId].serviceRequest(move.getTargetFloor());
@@ -186,3 +186,7 @@ BuildingState Building::getBuildingState() const {
 
     return buildingState;
 }
+
+
+
+
