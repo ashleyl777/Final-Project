@@ -70,28 +70,29 @@ bool Move::isValidMove(Elevator elevators[NUM_ELEVATORS]) const {
 
 void Move::setPeopleToPickup(const string& pickupList, const int currentFloor, 
                              const Floor& pickupFloor) {
-	numPeopleToPickup = 0;
+    numPeopleToPickup = 0;
     totalSatisfaction = 0;
-	
-	int targetFloor = -1;
-    int maxDistance = -1;
+    
+    int mostExtreme = -1;
+    int maxDiff = -1;
 
-	for (int i = 0; i < pickupList.size(); i++) {
-		int include = pickupList.at(i) - '0';
-		numPeopleToPickup++;
+    for (int i = 0; i < pickupList.size(); i++) {
+        int indice = pickupList.at(i) - '0';
+        numPeopleToPickup++;
 
-		Person p = pickupFloor.getPersonByIndex(indice);
-		totalSatisfaction = totalSatisfaction + (MAX_ANGER - p.getTargetFloor());
+        Person p = pickupFloor.getPersonByIndex(indice);
+        totalSatisfaction = totalSatisfaction + (MAX_ANGER - p.getTargetFloor());
 
-		int diff = abs(currentFloor - p.getTargetFloor());
-		if (diff > maxDiff) {
-			maxDiff = diff;
-			mostExtreme = p.getTargetFloor();
-		}
-	}
+        int diff = abs(currentFloor - p.getTargetFloor());
+        if (diff > maxDiff) {
+            maxDiff = diff;
+            mostExtreme = p.getTargetFloor();
+        }
+    }
 
-	targetFloor = mostExtreme;
+    targetFloor = mostExtreme;
 }
+
 
 //////////////////////////////////////////////////////
 ////// DO NOT MODIFY ANY CODE BENEATH THIS LINE //////
@@ -149,6 +150,7 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
 
 
 
