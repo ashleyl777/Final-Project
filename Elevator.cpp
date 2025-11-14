@@ -41,8 +41,6 @@ void Elevator::serviceRequest(int floorNum) {
     servicing = true;
 }
 
-}
-
 //////////////////////////////////////////////////////
 ////// DO NOT MODIFY ANY CODE BENEATH THIS LINE //////
 //////////////////////////////////////////////////////
@@ -77,6 +75,7 @@ int Elevator::getCurrentFloor() const {
 int Elevator::getTargetFloor() const {
     return targetFloor;
 }
+
 
 
 
