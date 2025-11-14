@@ -38,7 +38,7 @@ Move::Move(string commandString) : Move() {
 
 	else {
 		elevatorId = commandString.at(1) - '0';
-		isPickUp = true; 
+		isPickup = true; 
 	}
 }
 
@@ -147,6 +147,7 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
 
 
 
