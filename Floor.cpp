@@ -19,7 +19,7 @@ int Floor::tick(int currentTime) {
     int count = 0;
     int toRemove[MAX_PEOPLE_PER_FLOOR];
 
-    for (int i = 0; i < numPeople; ++i) {
+    for (int i = 0; i < numPeople; i++) {
         bool exploded = people[i].tick(currentTime);        
         if (exploded) {
             toRemove[count++] = i;
@@ -186,6 +186,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
