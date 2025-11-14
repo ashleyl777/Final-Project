@@ -47,7 +47,7 @@ bool Move::isValidMove(Elevator elevators[NUM_ELEVATORS]) const {
         return true;
     }
 
-   else if (isPickup == true) {
+   else if (isPickup) {
         if (elevatorId >= 0 && elevatorId < NUM_ELEVATORS && 
             !elevators[elevatorId].isServicing()) {
             return true;
@@ -72,27 +72,25 @@ void Move::setPeopleToPickup(const string& pickupList, const int currentFloor,
                              const Floor& pickupFloor) {
 	numPeopleToPickup = 0;
     totalSatisfaction = 0;
-	targetFloor = -1;
-    int maxDistance = -1;
 	
-	for (char indexChar : pickupList) {
-        int personIndex = indexChar - '0';   
-		
-        if (personIndex >= 0 && personIndex < pickupFloor.getNumPeople()) {
-			Person p = pickupFloor.getPersonByIndex(personIndex);
-			peopleToPickup[numPeopleToPickup] = personIndex;
-			numPeopleToPickup++;
-			
-			totalSatisfaction = (MAX_ANGER - p.getAngerLevel();
-			int personTargetFloor = p.getTargetFloor();
-            int distance = abs(personTargetFloor - currentFloor);
-			
-            if (distance > maxDistance) {
-                maxDistance = distance;
-                targetFloor = personTargetFloor;
-            }
-        }
-    }
+	int targetFloor = -1;
+    int maxDistance = -1;
+
+	for (int i = 0; i < pickupList.size(); i++) {
+		int include = pickupList.at(i) - '0';
+		numPeopleToPickup++;
+
+		Person p = pickupFloor.getPersonByIndex(indice);
+		totalSatisfaction = totalSatisfaction + (MAX_ANGER - p.getTargetFloor());
+
+		int diff = abs(currentFloor - p.getTargetFloor());
+		if (diff > maxDiff) {
+			maxDiff = diff;
+			mostExtreme = p.getTargetFloor();
+		}
+	}
+
+	targetFloor = mostExtreme;
 }
 
 //////////////////////////////////////////////////////
@@ -151,6 +149,7 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
 
 
 
