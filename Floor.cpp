@@ -22,7 +22,8 @@ int Floor::tick(int currentTime) {
     for (int i = 0; i < numPeople; i++) {
         bool exploded = people[i].tick(currentTime);        
         if (exploded) {
-            toRemove[count++] = i;
+            toRemove[count] = i;
+            count++;
         }
     }
     if (count < 0) {
@@ -186,6 +187,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
