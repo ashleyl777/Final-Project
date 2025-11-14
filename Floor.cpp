@@ -26,7 +26,7 @@ int Floor::tick(int currentTime) {
             count++;
         }
     }
-    if (count < 0) {
+    if (count > 0) {
         removePeople(toRemove, count);
     }
     return count;
@@ -187,6 +187,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
