@@ -21,31 +21,25 @@ using namespace std;
 Move::Move(string commandString) : Move() {
 	if (commandString.empty()) {
         isPass = true;
-        return;
     }
-    string upperCommandString = commandString;
-    for (char &c : upperCommandString) {
-        c = toupper(c);
-    }    
-    if (upperCommandString == "S") {
-        isSave = true;
-        return;
-    }
-    if (upperCommandString == "Q") {
-        isQuit = true;
-        return;
-    }
-	
-	if (upperCommandString.length() >= 3 && upperCommandString[0] == 'E') {
-        elevatorId = commandString[1] - '0';
-        char moveType = upperCommandString[2];        
-        if (moveType == 'F' && upperCommandString.length() >= 4) {
-            targetFloor = commandString[3] - '0';     
-        } 
-		else if (moveType == 'P') {
-            isPickup = true;
-        }
-    }
+
+	else if (commandString == "S" || commandString == "s") { 
+		isSave = true; 
+	}
+
+	else if (commandString == "Q" || commandString == "q") {
+		isQuit = true; 
+	}
+
+	else if (commandString.size() == 4) { 
+		elevatorId = commandString.at(1) - '0';
+		targetFloor = commandString.at(3) - '0';
+	}
+
+	else {
+		elevatorId = commandString.at(1) - '0';
+		isPickUp = true; 
+	}
 }
 
 bool Move::isValidMove(Elevator elevators[NUM_ELEVATORS]) const {
@@ -152,5 +146,6 @@ void Move::copyListOfPeopleToPickup(int newList[MAX_PEOPLE_PER_FLOOR]) const {
         newList[i] = peopleToPickup[i];
     }
 }
+
 
 
