@@ -18,23 +18,29 @@
 using namespace std;
 
 void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
-    std::mt19937 gen(1);
-    std::uniform_int_distribution<> floorDist(0, 9);
-    std::uniform_int_distribution<> angerDist(0, 3);
-
     isAIMode = isAIModeIn;
     printGameStartPrompt();
     initGame(gameFile);
 
     while (true) {
-        int src = floorDist(gen);
-        int dst = floorDist(gen);
-        
-        if (src != dst) {
-            std::stringstream ss;
-            ss << "0f" << src << "t" << dst << "a" << angerDist(gen);
-            Person p(ss.str());
-            building.spawnPerson(p);
+        string eventString;
+        while (getline(gameFile, eventString)) {
+            if (eventString.empty()) continue;
+            
+            size_t timeEnd = eventString.find(' ');
+            if (timeEnd == string::npos) continue;
+            
+            int eventTime = stoi(eventString.substr(0, timeEnd));
+            
+            if (eventTime == building.getTime()) {
+                string personInfo = eventString.substr(timeEnd + 1);
+                if (!personInfo.empty()) {
+                    Person p(personInfo);
+                    building.spawnPerson(p);
+                }
+            } else if (eventTime > building.getTime()) {
+                break;
+            }
         }
 
         building.prettyPrintBuilding(cout);
@@ -46,8 +52,34 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
     }
 }
 
+
 bool Game::isValidPickupList(const string& pickupList, 
                              const int pickupFloorNum) const {
+    Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
+    int numPeopleOnFloor = currentFloor.getNumPeople();
+    
+    if (pickupList.empty()) {
+        return false;
+    }
+    
+    for (char c : pickupList) {
+        if (!isdigit(c)) {
+            return false;
+        }
+        
+        int personIndex = c - '0';
+        if (personIndex < 0 || personIndex >= numPeopleOnFloor) {
+            return false;
+        }
+    }
+    
+    for (size_t i = 0; i < pickupList.length(); ++i) {
+        for (size_t j = i + 1; j < pickupList.length(); ++j) {
+            if (pickupList[i] == pickupList[j]) {
+                return false;
+            }
+        }
+    }
     return true;
 }
 
