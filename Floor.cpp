@@ -42,7 +42,7 @@ void Floor::addPerson(Person newPerson, int request) {
     }
     
     if (request < 0) {
-        hasUpRequest = false;
+        hasDownRequest = true;
     }
 }
 
@@ -186,6 +186,7 @@ int Floor::getNumPeople() const {
 Person Floor::getPersonByIndex(int index) const {
     return people[index];
 }
+
 
 
 
