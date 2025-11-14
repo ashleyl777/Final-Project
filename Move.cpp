@@ -46,26 +46,27 @@ bool Move::isValidMove(Elevator elevators[NUM_ELEVATORS]) const {
 	if (isPass || isSave || isQuit) {
         return true;
     }
-	if (isPickup || (targetFloor != -1 && elevatorId != -1)) { 
-        if (elevatorId < 0 || elevatorId >= NUM_ELEVATORS) {
-            return false;
-        }     
-        if (elevators[elevatorId].isServicing()) {
-            return false;
+
+   else if (isPickup == true) {
+        if (elevatorId >= 0 && elevatorId < NUM_ELEVATORS && 
+            !elevators[elevatorId].isServicing()) {
+            return true;
         }
-        if (!isPickup) {
-            if (targetFloor < 0 || targetFloor >= NUM_FLOORS) {
-                return false;
-            }            
-            if (targetFloor == elevators[elevatorId].getCurrentFloor()) {
-                return false;
-            }
-        }        
-        return true;
-    }    
+    }
+
+    else if (targetFloor != -1) {
+        if (elevatorId >= 0 && elevatorId < NUM_ELEVATORS &&
+            !elevators[elevatorId].isServicing() && targetFloor >= 0 &&
+            targetFloor < NUM_FLOORS && targetFloor != elevators[elevatorId].getCurrentFloor()) {
+            return true;
+        }
+    }
+
+    else {
+        return false;
+    }
     return false;
 }
-
 
 void Move::setPeopleToPickup(const string& pickupList, const int currentFloor, 
                              const Floor& pickupFloor) {
