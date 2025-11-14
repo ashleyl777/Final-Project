@@ -55,12 +55,12 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
 
 bool Game::isValidPickupList(const string& pickupList, 
                              const int pickupFloorNum) const {
-    Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
-    int numPeopleOnFloor = currentFloor.getNumPeople();
-    
     if (pickupList.empty()) {
         return false;
     }
+    
+    Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
+    int numPeopleOnFloor = currentFloor.getNumPeople();
     
     for (char c : pickupList) {
         if (!isdigit(c)) {
@@ -72,7 +72,7 @@ bool Game::isValidPickupList(const string& pickupList,
             return false;
         }
     }
-    
+
     for (size_t i = 0; i < pickupList.length(); ++i) {
         for (size_t j = i + 1; j < pickupList.length(); ++j) {
             if (pickupList[i] == pickupList[j]) {
@@ -80,6 +80,7 @@ bool Game::isValidPickupList(const string& pickupList,
             }
         }
     }
+    
     return true;
 }
 
