@@ -24,6 +24,8 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
 
     while (true) {
         string eventString;
+        bool pushedBack = false; 
+
         while (getline(gameFile, eventString)) {
             if (eventString.empty()) continue;
             
@@ -39,8 +41,18 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
                     building.spawnPerson(p);
                 }
             } else if (eventTime > building.getTime()) {
+                streamoff rewindAmount = eventString.length() + 1;
+                
+                gameFile.clear(); 
+                gameFile.seekg(-rewindAmount, ios_base::cur);
+                
+                pushedBack = true;
                 break;
             }
+        }
+        
+        if (!pushedBack) {
+            gameFile.clear(); 
         }
 
         building.prettyPrintBuilding(cout);
@@ -52,16 +64,15 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
     }
 }
 
-
-bool Game::isValidPickupList(const string& pickupList, 
+bool Game::isValidPickupList(const string& pickupList,
                              const int pickupFloorNum) const {
-    if (pickupList.empty()) {
-        return false;
-    }
-    
     Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
     int numPeopleOnFloor = currentFloor.getNumPeople();
     
+    if (pickupList.empty()) {
+        return false;
+    }   
+ 
     for (char c : pickupList) {
         if (!isdigit(c)) {
             return false;
@@ -72,7 +83,7 @@ bool Game::isValidPickupList(const string& pickupList,
             return false;
         }
     }
-
+    
     for (size_t i = 0; i < pickupList.length(); ++i) {
         for (size_t j = i + 1; j < pickupList.length(); ++j) {
             if (pickupList[i] == pickupList[j]) {
@@ -80,8 +91,38 @@ bool Game::isValidPickupList(const string& pickupList,
             }
         }
     }
+
+    int firstIndex = pickupList.at(0) - '0';
+    Person firstPerson = currentFloor.getPersonByIndex(firstIndex);
+    int requiredDirection = 0;
+
+    if (firstPerson.getTargetFloor() > firstPerson.getCurrentFloor()) {
+        requiredDirection = 1; 
+    } else if (firstPerson.getTargetFloor() < firstPerson.getCurrentFloor()) {
+        requiredDirection = -1;
+    } else {
+        return false;
+    }
+
+    for (size_t i = 1; i < pickupList.length(); ++i) {
+        int personIndex = pickupList.at(i) - '0';
+        Person p = currentFloor.getPersonByIndex(personIndex);
+        int personDirection = 0;
+
+        if (p.getTargetFloor() > p.getCurrentFloor()) {
+            personDirection = 1; 
+        } else if (p.getTargetFloor() < p.getCurrentFloor()) {
+            personDirection = -1; 
+        } else {
+            return false;
+        }
+
+        if (personDirection != requiredDirection) {
+            return false; 
+        }
+    }
     
-    return true;
+    return true; 
 }
 
 //////////////////////////////////////////////////////
