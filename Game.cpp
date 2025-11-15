@@ -19,13 +19,10 @@ using namespace std;
 
 void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
     isAIMode = isAIModeIn;
-    printGameStartPrompt();
-    initGame(gameFile);
-
-    while (true) {
+ 
+while (true) {
         string eventString;
-        bool pushedBack = false; 
-
+        bool pushedBack = false;
         while (getline(gameFile, eventString)) {
             if (eventString.empty()) continue;
             
@@ -43,7 +40,7 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
             } else if (eventTime > building.getTime()) {
                 streamoff rewindAmount = eventString.length() + 1;
                 
-                gameFile.clear(); 
+                gameFile.clear();
                 gameFile.seekg(-rewindAmount, ios_base::cur);
                 
                 pushedBack = true;
@@ -52,7 +49,7 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
         }
         
         if (!pushedBack) {
-            gameFile.clear(); 
+            gameFile.clear();
         }
 
         building.prettyPrintBuilding(cout);
