@@ -102,9 +102,11 @@ bool Game::isValidPickupList(const string& pickupList,
 
     if (firstPerson.getTargetFloor() > pickupFloorNum) {
         requiredDirection = 1;
-    } else if (firstPerson.getTargetFloor() < pickupFloorNum) {
+    } 
+    else if (firstPerson.getTargetFloor() < pickupFloorNum) {
         requiredDirection = -1;
-    } else {
+    } 
+    else {
         return false;
     }
     
@@ -115,9 +117,11 @@ bool Game::isValidPickupList(const string& pickupList,
 
         if (p.getTargetFloor() > pickupFloorNum) {
             personDirection = 1;
-        } else if (p.getTargetFloor() < pickupFloorNum) {
+        } 
+        else if (p.getTargetFloor() < pickupFloorNum) {
             personDirection = -1;
-        } else {
+        } 
+        else {
             return false;
         }
 
