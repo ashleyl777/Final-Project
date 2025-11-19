@@ -1,11 +1,11 @@
-﻿/*
+/*
  * Copyright 2023 University of Michigan EECS183
  *
  * Game.cpp
  * Project UID 848fee0125dbb5eb53ed294f20dbef81
  *
- * Ashley Liao, Yeeun Kim, Liming Ng, Jaeseong Koo
- * ashleyyl, kimyeeun, limingf, jaeseo
+ * Names
+ * <#Uniqnames#>
  *
  * Final Project - Elevators
  */
@@ -18,108 +18,114 @@
 using namespace std;
 
 void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
-    isAIMode = isAIModeIn;
- 
-while (true) {
+    if (!gameFile.is_open()) {
+            exit(1);
+        }
+
+        isAIMode = isAIModeIn;
+        printGameStartPrompt();
+        initGame(gameFile);
+
         string eventString;
-        bool pushedBack = false;
         while (getline(gameFile, eventString)) {
-            if (eventString.empty()) continue;
-            
-            size_t timeEnd = eventString.find(' ');
-            if (timeEnd == string::npos) continue;
-            
-            int eventTime = stoi(eventString.substr(0, timeEnd));
-            
-            if (eventTime == building.getTime()) {
-                string personInfo = eventString.substr(timeEnd + 1);
-                if (!personInfo.empty()) {
-                    Person p(personInfo);
-                    building.spawnPerson(p);
-                }
-            } else if (eventTime > building.getTime()) {
-                streamoff rewindAmount = eventString.length() + 1;
-                
-                gameFile.clear();
-                gameFile.seekg(-rewindAmount, ios_base::cur);
-                
-                pushedBack = true;
-                break;
+            if (eventString.empty()) {
+                continue;
             }
-        }
-        
-        if (!pushedBack) {
-            gameFile.clear();
+
+            Person p(eventString);
+
+            int eventTime = p.getTurn();
+
+            while (building.getTime() < eventTime) {
+                building.prettyPrintBuilding(cout);
+                satisfactionIndex.printSatisfaction(cout, false);
+                checkForGameEnd();
+
+                Move nextMove = getMove();
+                update(nextMove);
+            }
+
+            building.spawnPerson(p);
         }
 
-        building.prettyPrintBuilding(cout);
-        satisfactionIndex.printSatisfaction(cout, false);
-        checkForGameEnd();
+        while (true) {
+            building.prettyPrintBuilding(cout);
+            satisfactionIndex.printSatisfaction(cout, false);
+            checkForGameEnd();
 
-        Move nextMove = getMove();
-        update(nextMove);
+            Move nextMove = getMove();
+            update(nextMove);
+        }
     }
-}
 
 bool Game::isValidPickupList(const string& pickupList,
                              const int pickupFloorNum) const {
     Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
     int numPeopleOnFloor = currentFloor.getNumPeople();
-    
-    if (pickupList.empty()) {
+
+    if (pickupList.length() > ELEVATOR_CAPACITY) {
         return false;
-    }   
- 
+    }
+
+    bool indexUsed[MAX_PEOPLE_PER_FLOOR] = {false};
+    int maxIndex = -1;
+
     for (char c : pickupList) {
         if (!isdigit(c)) {
             return false;
         }
-        
+
         int personIndex = c - '0';
-        if (personIndex < 0 || personIndex >= numPeopleOnFloor) {
+
+        if (indexUsed[personIndex]) {
             return false;
         }
+        indexUsed[personIndex] = true;
+
+        if (personIndex > maxIndex) {
+            maxIndex = personIndex;
+        }
+    }
+
+    if (maxIndex >= numPeopleOnFloor) {
+        return false;
     }
     
-    for (size_t i = 0; i < pickupList.length(); ++i) {
-        for (size_t j = i + 1; j < pickupList.length(); ++j) {
-            if (pickupList[i] == pickupList[j]) {
-                return false;
-            }
-        }
+    if (pickupList.empty()) {
+
+        return true;
     }
 
     int firstIndex = pickupList.at(0) - '0';
     Person firstPerson = currentFloor.getPersonByIndex(firstIndex);
     int requiredDirection = 0;
 
-    if (firstPerson.getTargetFloor() > firstPerson.getCurrentFloor()) {
-        requiredDirection = 1; 
-    } else if (firstPerson.getTargetFloor() < firstPerson.getCurrentFloor()) {
+    if (firstPerson.getTargetFloor() > pickupFloorNum) {
+        requiredDirection = 1;
+    } else if (firstPerson.getTargetFloor() < pickupFloorNum) {
         requiredDirection = -1;
     } else {
         return false;
     }
-
+    
     for (size_t i = 1; i < pickupList.length(); ++i) {
         int personIndex = pickupList.at(i) - '0';
         Person p = currentFloor.getPersonByIndex(personIndex);
         int personDirection = 0;
 
-        if (p.getTargetFloor() > p.getCurrentFloor()) {
-            personDirection = 1; 
-        } else if (p.getTargetFloor() < p.getCurrentFloor()) {
-            personDirection = -1; 
+        if (p.getTargetFloor() > pickupFloorNum) {
+            personDirection = 1;
+        } else if (p.getTargetFloor() < pickupFloorNum) {
+            personDirection = -1;
         } else {
             return false;
         }
 
         if (personDirection != requiredDirection) {
-            return false; 
+            return false;
         }
     }
-    
-    return true; 
+    return true;
 }
 
 //////////////////////////////////////////////////////
@@ -139,7 +145,7 @@ bool Game::performMove(Move& move) const
     {
 
         Elevator taggedElevator = building.getElevatorById(move.getElevatorId());
-        Floor taggedFloor = 
+        Floor taggedFloor =
                   building.getFloorByFloorNum(taggedElevator.getCurrentFloor());
 
         if (taggedFloor.getNumPeople() > 0)
@@ -275,7 +281,7 @@ void Game::printSatisfactionIndex() const
 
 void Game::getPeopleToPickup(Move& move) const
 {
-    int currentFloorNum = 
+    int currentFloorNum =
                building.getElevatorById(move.getElevatorId()).getCurrentFloor();
     Floor currentFloor = building.getFloorByFloorNum(currentFloorNum);
 
