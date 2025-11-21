@@ -60,78 +60,94 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile) {
 
 bool Game::isValidPickupList(const string& pickupList,
                              const int pickupFloorNum) const {
+ 
     Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
     int numPeopleOnFloor = currentFloor.getNumPeople();
-
+    
     if (pickupList.length() > ELEVATOR_CAPACITY) {
         return false;
     }
-
-    bool indexUsed[MAX_PEOPLE_PER_FLOOR] = {false};
+    
+    bool indexUsed[MAX_PEOPLE_PER_FLOOR];
+    for (int i = 0; i < MAX_PEOPLE_PER_FLOOR; i++) {
+        indexUsed[i] = false;
+    }
+    
     int maxIndex = -1;
-
-    for (char c : pickupList) {
+    
+    for (int i = 0; i < pickupList.length(); i++) {
+        char c = pickupList[i];
+        
         if (!isdigit(c)) {
             return false;
         }
-
+        
         int personIndex = c - '0';
-
+        
+        if (personIndex < 0) {
+            return false;
+        }
+        
         if (indexUsed[personIndex]) {
             return false;
         }
         indexUsed[personIndex] = true;
-
+        
         if (personIndex > maxIndex) {
             maxIndex = personIndex;
         }
     }
-
+    
     if (maxIndex >= numPeopleOnFloor) {
         return false;
     }
     
     if (pickupList.empty()) {
-
         return true;
     }
-
+    
     int firstIndex = pickupList.at(0) - '0';
     Person firstPerson = currentFloor.getPersonByIndex(firstIndex);
-    int requiredDirection = 0;
-
+    int requireDirection = 0;
+    
     if (firstPerson.getTargetFloor() > pickupFloorNum) {
-        requiredDirection = 1;
-    } 
+        requireDirection = 1;
+    }
     else if (firstPerson.getTargetFloor() < pickupFloorNum) {
-        requiredDirection = -1;
-    } 
+        requireDirection = -1;
+    }
     else {
         return false;
     }
     
-    for (size_t i = 1; i < pickupList.length(); ++i) {
+    for (size_t i = 1; i < pickupList.length(); i++) {
         int personIndex = pickupList.at(i) - '0';
         Person p = currentFloor.getPersonByIndex(personIndex);
+        
         int personDirection = 0;
-
+        
         if (p.getTargetFloor() > pickupFloorNum) {
             personDirection = 1;
-        } 
+        }
         else if (p.getTargetFloor() < pickupFloorNum) {
             personDirection = -1;
-        } 
+        }
         else {
             return false;
         }
-
-        if (personDirection != requiredDirection) {
+        
+        if (personDirection != requireDirection) {
             return false;
         }
+        
     }
+    
     return true;
+    
 }
 
+ 
+   
 //////////////////////////////////////////////////////
 ////// DO NOT MODIFY ANY CODE BENEATH THIS LINE //////
 //////////////////////////////////////////////////////
