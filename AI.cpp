@@ -24,7 +24,6 @@ string getAIMoveString(const BuildingState& buildingState) {
     for (int i = 0; i < NUM_ELEVATORS; ++i) {
         if (!buildingState.elevators[i].isServicing) {
             int currentFloor = buildingState.elevators[i].currentFloor;
-            
             if (buildingState.floors[currentFloor].numPeople > 0) {
                 return "e" + to_string(i) + "p";
             }
@@ -65,6 +64,12 @@ string getAIMoveString(const BuildingState& buildingState) {
     }
 
     if (bestElevatorId != -1) {
+        int currentEFloor = buildingState.elevators[bestElevatorId].currentFloor;
+        
+        if (currentEFloor == targetFloor) {
+             return "e" + to_string(bestElevatorId) + "p";
+        }
+        
         return "e" + to_string(bestElevatorId) + "f" + to_string(targetFloor);
     }
 
@@ -79,18 +84,36 @@ string getAIPickupList(const Move& move, const BuildingState& buildingState,
 
     int upAngerSum = 0;
     int downAngerSum = 0;
+    int upCount = 0;
+    int downCount = 0;
     
     for (int i = 0; i < floorToPickup.getNumPeople(); ++i) {
         Person p = floorToPickup.getPersonByIndex(i);
         
         if (p.getTargetFloor() > currentFloor) {
             upAngerSum += p.getAngerLevel();
+            upCount++;
         } else if (p.getTargetFloor() < currentFloor) {
             downAngerSum += p.getAngerLevel();
+            downCount++;
         }
     }
     
-    bool pickupUp = (upAngerSum >= downAngerSum);
+    bool pickupUp = true;
+    
+    if (upAngerSum > downAngerSum) {
+        pickupUp = true;
+    }
+    else if (downAngerSum > upAngerSum) {
+        pickupUp = false;
+    }
+    else {
+        if (downCount > upCount) {
+            pickupUp = false;
+        } else {
+            pickupUp = true;
+        }
+    }
     
     string indices = "";
     
